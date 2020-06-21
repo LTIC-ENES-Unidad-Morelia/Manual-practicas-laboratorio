@@ -1,0 +1,36 @@
+faguilar@LaptopPrecision:~/git/Manual-de-practicas-de-laboratorio/prac_9$ ls dataset_test/mas_negativos/ | wc -l
+9011
+faguilar@LaptopPrecision:~/git/Manual-de-practicas-de-laboratorio/prac_9$ ls dataset_test/mas_positivos/ | wc -l
+642
+faguilar@LaptopPrecision:~/git/Manual-de-practicas-de-laboratorio/prac_9$ ls dataset_train/mas_positivos/ | wc -l   
+7937
+faguilar@LaptopPrecision:~/git/Manual-de-practicas-de-laboratorio/prac_9$ ls dataset_train/mas_negativos/ | wc -l    
+75257
+
+Total: 92847 
+
+
+
+with_antialiasing
+(practica1) faguilar@LaptopPrecision:~/git/Manual-de-practicas-de-laboratorio/prac_9$ ls dataset_mode/with_antialiasing/dataset_test/mas_neg/ | wc -l9011
+(practica1) faguilar@LaptopPrecision:~/git/Manual-de-practicas-de-laboratorio/prac_9$ ls dataset_mode/with_antialiasing/dataset_test/mas_pos/ | wc -l
+642
+(practica1) faguilar@LaptopPrecision:~/git/Manual-de-practicas-de-laboratorio/prac_9$ ls dataset_mode/with_antialiasing/dataset_train/mas_neg/ | wc -l
+74643
+(practica1) faguilar@LaptopPrecision:~/git/Manual-de-practicas-de-laboratorio/prac_9$ ls dataset_mode/with_antialiasing/dataset_train/mas_pos/ | wc -l
+7936
+
+Total: 92232
+
+
+
+thout_antialiasing/dataset_train/mas_neg/ | wc -l
+74643
+(practica1) faguilar@LaptopPrecision:~/git/Manual-de-practicas-de-laboratorio/prac_9/microneurismas$ ls ../dataset_mode/without_antialiasing/dataset_test/mas_neg/ | wc -l
+9011
+(practica1) faguilar@LaptopPrecision:~/git/Manual-de-practicas-de-laboratorio/prac_9/microneurismas$ ls ../dataset_mode/without_antialiasing/dataset_train/mas_pos/ | wc -l
+7936
+(practica1) faguilar@LaptopPrecision:~/git/Manual-de-practicas-de-laboratorio/prac_9/microneurismas$ ls ../dataset_mode/without_antialiasing/dataset_test/mas_pos/ | wc -l
+642
+
+Total: 92232
