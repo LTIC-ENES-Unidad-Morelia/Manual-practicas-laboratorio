@@ -1,7 +1,7 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 ## -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020
+# Copyright (C) 2018
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,30 +21,37 @@
 #
 #Author: Fernando Rodrigo Aguilar Javier
 #Author email: faguilar@comunidad.unam.mx
-#
-#Author: Sergio Rogelio Tinoco Martinez
-#Author email: stinoco@enesmorelia.unam.mx
 
-#Detalles del codigo 
+#Detalles del codigo --------------------------------------------------------------------
+#Solo es necesario cambiar el campo de la variable path para que pandas encuentre el path
+#--------------------------------------------------------
+#--------------------------------------------------------
+#GENERATE DATA FOR LOAD FROM NPY NUMPY ARRAY
+#Total initial dataset: 
+#No a matrix 512
+###########################
+#Before
+#length of Data set train: 33543
+#Positive  Negative
+#1962      31581
+###########################
+#length of Data set test: 3727
+#Positive  Negative
+#218       3509  
+##########################
+#37270 Instances
+#After
 #length of Data set train: 39429
 #Positive  Negative
 #7848      31581
-###############################
+###########################
 #length of Data set test: 3727 
 #Positive  Negative
 #218       3509  
-##############################s
+##########################
 #43156 Instances
 ##################################%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%################################
 # import the necessary packages
-import numpy as np
-import tensorflow as tf
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
-import random
-import skimage as sk
-import skimage.transform
 from keras import backend as K
 from keras import regularizers
 from keras.models import Sequential
@@ -55,7 +62,16 @@ from keras.layers.core import Activation, Flatten, Dense, Dropout
 from keras.datasets import mnist
 from keras.utils import np_utils
 from keras.optimizers import SGD, RMSprop, Adam
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+
 from sklearn.metrics import f1_score, precision_score, recall_score, confusion_matrix#added
+import pandas as pd
+import numpy as np
+import random
+import skimage as sk
+import skimage.transform
 from skimage.io import imread, imshow
 from scipy import ndarray
 
@@ -84,7 +100,7 @@ class LeNet:
 		model.add(Activation("relu"))
 		model.add(Dropout(.5))
  
-		# a sigmoid classifier
+		# a softmax classifier
 		model.add(Dense(1))
 		model.add(Activation("sigmoid"))
 		#model.add(BatchNormalization())
@@ -196,18 +212,14 @@ if __name__ == '__main__':
     NB_CLASSES = 2  # number of outputs 
     INPUT_SHAPE = (IMG_ROWS, IMG_COLS, 1)
     k=10#++
-    k_iters = [[], [], [], [], [], []]#++
+    k_folds = [[], [], [], [], [], []]#++
     #Index 0 ---> train_loss
     #Index 1 ---> train_acc
     #Index 2 ---> val_loss
     #Index 3 ---> val_acc
     #Index 4 ---> test_loss
     #Index 5 ---> test_acc
-    model_evaluation = [[], [], []]#++
-    #Index 0 ---> Presicion
-    #Index 1 ---> Recall
-    #Index 2 ---> Scrore F_Beta
-
+    
     for i in range(k):
         #For gen_data in each iteration
         gen_data()
@@ -236,10 +248,10 @@ if __name__ == '__main__':
             batch_size=BATCH_SIZE, epochs=NB_EPOCH, 
             verbose=VERBOSE, validation_split=VALIDATION_SPLIT, shuffle=True)
         ##++++++++++++++++++++++++++++++++++++++++++++++++++++
-        k_iters[0].append(history.history['loss'][-1])
-        k_iters[1].append(history.history['acc'][-1])
-        k_iters[2].append(history.history['val_loss'][-1])
-        k_iters[3].append(history.history['val_acc'][-1])
+        k_folds[0].append(history.history['loss'][-1])
+        k_folds[1].append(history.history['acc'][-1])
+        k_folds[2].append(history.history['val_loss'][-1])
+        k_folds[3].append(history.history['val_acc'][-1])
         ##+++++++++++++++++++++++++++++++++++++++++++++++++++++
         
         # Predict and show results
@@ -247,30 +259,22 @@ if __name__ == '__main__':
         print("\nTest score:", score[0])
         print('Test accuracy:', score[1])
         ##+++++++++++++++++++++++++++++++++++++++++++++++++++++
-        k_iters[4].append(score[0])
-        k_iters[5].append(score[1])
+        k_folds[4].append(score[0])
+        k_folds[5].append(score[1])
         ##+++++++++++++++++++++++++++++++++++++++++++++++++++++
         print('iteracion %s' %(i))
         
-        y_pred1 = model.predict(X_test)
-        y_pred = np.argmax(y_pred1, axis=1)
-        model_evaluation[0].append(precision_score(y_test, y_pred , average="macro"))
-        model_evaluation[1].append(recall_score(y_test, y_pred , average="macro"))
-        model_evaluation[2].append(f1_score(y_test, y_pred , average="macro"))
-        
+    #y_pred1 = model.predict(X_test)
+    #y_pred = np.argmax(y_pred1, axis=1)
+    # Print f1, precision, and recall scores
+    #print("P: %s" %(precision_score(y_test, y_pred , average="macro")))
+    #print("R: %s" %(recall_score(y_test, y_pred , average="macro")))
+    #print("F1: %s" %(f1_score(y_test, y_pred , average="macro")))
     ##++++++++++++++++
     # list all data in history
     print(history.history.keys())
-    values = ['train_loss', 'train_acc', 'val_loss', 'val_acc', 'test_loss', 'test_acc']
     for i in range(6):
-        aux = sum(k_iters[i]) / k
-        print('%s:      %s' %(values[i], aux))
-    #For model evaluateon scores
-    n = 3
-    values = ['precision', 'recall', 'f_score']
-    for i in range(n):
-        aux = sum(model_evaluation[i]) / n
-        print('%s:      %s' %(values[i], aux))
+        print(sum(k_folds[i]) / k)
     # summarize history for accuracy
     #plt.plot(history.history['acc'])
     #plt.plot(history.history['val_acc'])

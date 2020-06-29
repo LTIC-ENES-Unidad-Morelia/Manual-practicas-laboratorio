@@ -55,7 +55,7 @@ from keras.layers.core import Activation, Flatten, Dense, Dropout
 from keras.datasets import mnist
 from keras.utils import np_utils
 from keras.optimizers import SGD, RMSprop, Adam
-from sklearn.metrics import f1_score, precision_score, recall_score, confusion_matrix#added
+from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score, confusion_matrix#added
 from skimage.io import imread, imshow
 from scipy import ndarray
 
@@ -195,7 +195,7 @@ if __name__ == '__main__':
     IMG_ROWS, IMG_COLS = 21, 21 # input image dimensions
     NB_CLASSES = 2  # number of outputs 
     INPUT_SHAPE = (IMG_ROWS, IMG_COLS, 1)
-    k=10#++
+    k=30#++
     k_iters = [[], [], [], [], [], []]#++
     #Index 0 ---> train_loss
     #Index 1 ---> train_acc
@@ -203,10 +203,11 @@ if __name__ == '__main__':
     #Index 3 ---> val_acc
     #Index 4 ---> test_loss
     #Index 5 ---> test_acc
-    model_evaluation = [[], [], []]#++
-    #Index 0 ---> Presicion
-    #Index 1 ---> Recall
-    #Index 2 ---> Scrore F_Beta
+    model_evaluation = [[], [], [], []]#++
+    #Index 0 ---> Accuracy
+    #Index 1 ---> Precision
+    #Index 2 ---> Recall
+    #Index 3 ---> F1 Score
 
     for i in range(k):
         #For gen_data in each iteration
@@ -252,11 +253,13 @@ if __name__ == '__main__':
         ##+++++++++++++++++++++++++++++++++++++++++++++++++++++
         print('iteracion %s' %(i))
         
-        y_pred1 = model.predict(X_test)
-        y_pred = np.argmax(y_pred1, axis=1)
-        model_evaluation[0].append(precision_score(y_test, y_pred , average="macro"))
-        model_evaluation[1].append(recall_score(y_test, y_pred , average="macro"))
-        model_evaluation[2].append(f1_score(y_test, y_pred , average="macro"))
+        yhat_classes2D = model.predict_classes(X_test)
+        yhat_classes = yhat_classes2D[:, 0] # Metrics from Scikit-Learn require 1D arrays
+
+        model_evaluation[0].append(accuracy_score(y_test, yhat_classes))
+        model_evaluation[1].append(precision_score(y_test, yhat_classes))
+        model_evaluation[2].append(recall_score(y_test, yhat_classes))
+        model_evaluation[3].append(f1_score(y_test, yhat_classes))
         
     ##++++++++++++++++
     # list all data in history
@@ -265,11 +268,12 @@ if __name__ == '__main__':
     for i in range(6):
         aux = sum(k_iters[i]) / k
         print('%s:      %s' %(values[i], aux))
-    #For model evaluateon scores
-    n = 3
-    values = ['precision', 'recall', 'f_score']
+    #For model evaluation scores
+    print("\n\n+++ Métricas +++")
+    n = 4
+    values = ['Accuracy', 'Precision', 'Recall', 'F1 Score']
     for i in range(n):
-        aux = sum(model_evaluation[i]) / n
+        aux = sum(model_evaluation[i]) / len(model_evaluation[i])
         print('%s:      %s' %(values[i], aux))
     # summarize history for accuracy
     #plt.plot(history.history['acc'])
